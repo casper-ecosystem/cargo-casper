@@ -5,10 +5,12 @@
 use std::{
     env,
     path::{Path, PathBuf},
+    process,
 };
 
 use clap::{crate_description, crate_name, crate_version, App, Arg};
 use once_cell::sync::Lazy;
+use url::Url;
 
 pub mod common;
 mod contract_package;
@@ -30,6 +32,9 @@ const ROOT_PATH_ARG_ABOUT: &str = "Path to new folder for contract and tests";
 const WORKSPACE_PATH_ARG_NAME: &str = "workspace-path";
 const WORKSPACE_PATH_ARG_LONG: &str = "workspace-path";
 
+const GIT_URL_ARG_NAME: &str = "git-url";
+const GIT_URL_LONG: &str = "git-url";
+
 const FAILURE_EXIT_CODE: i32 = 101;
 
 static ARGS: Lazy<Args> = Lazy::new(Args::new);
@@ -38,6 +43,7 @@ static ARGS: Lazy<Args> = Lazy::new(Args::new);
 struct Args {
     root_path: PathBuf,
     workspace_path: Option<PathBuf>,
+    git_url: Option<Url>,
 }
 
 impl Args {
@@ -69,12 +75,18 @@ impl Args {
             .takes_value(true)
             .hidden(true);
 
+        let git_url_arg = Arg::new(GIT_URL_ARG_NAME)
+            .long(GIT_URL_LONG)
+            .takes_value(true)
+            .hidden(true);
+
         let arg_matches = App::new(crate_name!())
             .version(crate_version!())
             .about(crate_description!())
             .override_usage(USAGE)
             .arg(root_path_arg)
             .arg(workspace_path_arg)
+            .arg(git_url_arg)
             .get_matches_from(filtered_args_iter);
 
         let root_path = arg_matches
@@ -86,9 +98,14 @@ impl Args {
             .value_of(WORKSPACE_PATH_ARG_NAME)
             .map(PathBuf::from);
 
+        let git_url = arg_matches
+            .value_of(GIT_URL_ARG_NAME)
+            .map(|arg| Url::parse(arg).expect("expected valid url"));
+
         Args {
             root_path,
             workspace_path,
+            git_url,
         }
     }
 
@@ -99,6 +116,10 @@ impl Args {
     pub fn workspace_path(&self) -> Option<&Path> {
         self.workspace_path.as_deref()
     }
+
+    pub fn git_url(&self) -> Option<&Url> {
+        self.git_url.as_ref()
+    }
 }
 
 fn main() {
@@ -107,6 +128,11 @@ fn main() {
             ": destination '{}' already exists",
             ARGS.root_path().display()
         ));
+    }
+
+    if ARGS.git_url().is_some() && ARGS.workspace_path().is_some() {
+        eprintln!("Must pick either --workspace-path or --git-url.");
+        process::exit(FAILURE_EXIT_CODE);
     }
 
     common::create_dir_all(ARGS.root_path());

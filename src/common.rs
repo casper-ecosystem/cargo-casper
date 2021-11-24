@@ -9,19 +9,48 @@ pub static CL_CONTRACT: Lazy<Dependency> =
     Lazy::new(|| Dependency::new("casper-contract", "1.4.2"));
 pub static CL_TYPES: Lazy<Dependency> = Lazy::new(|| Dependency::new("casper-types", "1.4.2"));
 pub static CL_ENGINE_TEST_SUPPORT: Lazy<Dependency> =
-    Lazy::new(|| Dependency::new("casper-engine-test-support", "1.0.0"));
-pub static PATCH_SECTION: Lazy<String> = Lazy::new(|| match ARGS.workspace_path() {
-    Some(workspace_path) => {
+    Lazy::new(|| Dependency::new("casper-engine-test-support", "2.0.2"));
+pub static CL_EXECUTION_ENGINE: Lazy<Dependency> =
+    Lazy::new(|| Dependency::new("casper-execution-engine", "1.4.2"));
+// pub static PATCH_SECTION: Lazy<String> = Lazy::new(|| match ARGS.workspace_path() {
+//     Some(workspace_path) => {
+//         format!(
+//             r#"[patch.crates-io]
+// casper-engine-test-support = {{ path = "{0}/execution_engine_testing/test_support" }}
+// casper-contract = {{ path = "{0}/smart_contracts/contract" }}
+// casper-types = {{ path = "{0}/types" }}
+// "#,
+//             workspace_path.display()
+//         )
+//     }
+//     None => String::new(),
+// });
+pub static PATCH_SECTION: Lazy<String> = Lazy::new(|| {
+    if ARGS.workspace_path().is_none() && ARGS.git_url().is_none() {
+        String::new()
+    } else if let Some(workspace_path) = ARGS.workspace_path() {
         format!(
             r#"[patch.crates-io]
 casper-engine-test-support = {{ path = "{0}/execution_engine_testing/test_support" }}
 casper-contract = {{ path = "{0}/smart_contracts/contract" }}
 casper-types = {{ path = "{0}/types" }}
+casper-execution-engine = {{ path = "{0}/execution_engine" }}
 "#,
             workspace_path.display()
         )
+    } else if let Some(git_url) = ARGS.git_url() {
+        format!(
+            r#"[patch.crates-io]
+casper-engine-test-support = {{ git = "{0}" }}
+casper-contract = {{ git = "{0}" }}
+casper-types = {{ git = "{0}" }}
+casper-execution-engine = {{ git = "{0}" }}
+"#,
+            git_url.as_str()
+        )
+    } else {
+        unreachable!()
     }
-    None => String::new(),
 });
 
 pub fn print_error_and_exit(msg: &str) -> ! {
