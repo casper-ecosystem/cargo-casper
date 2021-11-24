@@ -1,10 +1,7 @@
 # `cargo-casper`
 
-[![LOGO](https://raw.githubusercontent.com/casper-network/casper-node/master/images/casper-association-logo-primary.svg)](https://casper.network/)
-
-[![Build Status](https://drone-auto-casper-network.casperlabs.io/api/badges/casper-network/casper-node/status.svg?branch=dev)](http://drone-auto-casper-network.casperlabs.io/casper-network/casper-node)
 [![Crates.io](https://img.shields.io/crates/v/cargo-casper)](https://crates.io/crates/cargo-casper)
-[![License](https://img.shields.io/badge/license-Apache-blue)](https://github.com/casper-network/casper-node/blob/dev/LICENSE)
+[![License](https://img.shields.io/badge/license-Apache-blue)](LICENSE)
 
 A command line tool for creating a Wasm smart contract and tests for use on the Casper network.
 
@@ -18,12 +15,11 @@ A command line tool for creating a Wasm smart contract and tests for use on the 
 cargo install cargo-casper
 ```
 
-To install from the latest `dev` branch:
+To install from the latest `main` branch:
 
 ```
-git clone https://github.com/casper-network/casper-node
-cd casper-node/execution_engine_testing/cargo_casper
-cargo install cargo-casper --path=.
+git clone https://github.com/casper-ecosystem/cargo-casper
+cargo install cargo-casper --path=cargo-casper
 ```
 
 ## Usage
@@ -39,18 +35,15 @@ This creates the following files:
 ```
 my_project/
 ├── contract
-│   ├── .cargo
-│   │   └── config.toml
 │   ├── Cargo.toml
 │   └── src
 │       └── main.rs
 ├── Makefile
 ├── rust-toolchain
-├── tests
-│   ├── Cargo.toml
-│   └── src
-│       └── integration_tests.rs
-└── .travis.yml
+└── tests
+    ├── Cargo.toml
+    └── src
+        └── integration_tests.rs
 ```
 
 ### Building the contract
@@ -81,4 +74,4 @@ make test
 
 ## License
 
-Licensed under the [Apache License Version 2.0](https://github.com/casper-network/casper-node/blob/master/LICENSE).
+Licensed under the [Apache License Version 2.0](LICENSE).

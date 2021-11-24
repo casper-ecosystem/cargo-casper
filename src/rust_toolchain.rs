@@ -17,6 +17,7 @@ mod tests {
     const PATH_PREFIX: &str = "/execution_engine_testing/cargo_casper";
 
     #[test]
+    #[ignore]
     fn check_toolchain_version() {
         let mut toolchain_path = env::current_dir().unwrap().display().to_string();
         let index = toolchain_path.find(PATH_PREFIX).unwrap_or_else(|| {

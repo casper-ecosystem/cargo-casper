@@ -15,13 +15,29 @@ All notable changes to this project will be documented in this file.  The format
 
 
 
-## [1.4.0] - 2021-10-04
+## [1.4.2] - 2021-11-13
+
+### Removed
+* Remove support for generating an ERC-20 contract.
+
+
+
+## [1.4.1] - 2021-10-23
+
+No changes.
+
+
+
+## [1.4.0] - 2021-10-21 [YANKED]
 
 ### Changed
 * Support building and testing using stable Rust.
 
-### Removed
-* Remove support for generating an ERC-20 contract.
+
+
+## [1.3.4] - 2021-10-14
+
+No changes.
 
 
 
@@ -38,16 +54,22 @@ No changes.
 
 
 
-## [1.3.1] - 2021-07-26
+## [1.3.1] - 2021-07-25
 
 No changes.
 
 
 
-## [1.3.0] - 2021-07-19
+## [1.3.0] - 2021-07-20
 
 ### Changed
 * Update pinned version of Rust to `nightly-2021-06-17`.
+
+
+
+## [1.2.1] - 2021-07-17
+
+No changes.
 
 
 
@@ -84,14 +106,18 @@ No changes.
 
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0
-[unreleased]: https://github.com/casper-network/casper-node/compare/v1.4.0...dev
-[1.4.0]: https://github.com/casper-network/casper-node/compare/v1.3.3...v1.4.0
-[1.3.3]: https://github.com/casper-network/casper-node/compare/v1.3.2...v1.3.3
-[1.3.2]: https://github.com/casper-network/casper-node/compare/v1.3.1...v1.3.2
-[1.3.1]: https://github.com/casper-network/casper-node/compare/v1.3.0...v1.3.1
-[1.3.0]: https://github.com/casper-network/casper-node/compare/v1.2.0...v1.3.0
-[1.2.0]: https://github.com/casper-network/casper-node/compare/v1.1.1...v1.2.0
-[1.1.1]: https://github.com/casper-network/casper-node/compare/v1.0.1...v1.1.1
-[1.1.0]: https://github.com/casper-network/casper-node/compare/v1.0.1...v1.1.1
-[1.0.1]: https://github.com/casper-network/casper-node/compare/v1.0.0...v1.0.1
-[1.0.0]: https://github.com/casper-network/casper-node/releases/tag/v1.0.0
+[unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.2...main
+[1.4.2]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.1...v1.4.2
+[1.4.1]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.0...v1.4.1
+[1.4.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.3.3...v1.4.0
+[1.3.4]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.3.3...v1.3.4
+[1.3.3]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.3.2...v1.3.3
+[1.3.2]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.3.1...v1.3.2
+[1.3.1]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.3.0...v1.3.1
+[1.3.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.2.1...v1.3.0
+[1.2.1]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.2.0...v1.2.1
+[1.2.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.1.1...v1.2.0
+[1.1.1]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.1.0...v1.1.1
+[1.1.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/casper-ecosystem/cargo-casper/tree/v1.0.0
