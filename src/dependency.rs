@@ -33,6 +33,11 @@ impl Dependency {
     }
 
     #[cfg(test)]
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    #[cfg(test)]
     pub fn version(&self) -> &str {
         &self.version
     }
