@@ -7,7 +7,7 @@ use crate::{dependency::Dependency, CasperOverrides, ARGS, FAILURE_EXIT_CODE};
 
 pub static CL_CONTRACT: Lazy<Dependency> =
     Lazy::new(|| Dependency::new("casper-contract", "1.4.2"));
-pub static CL_TYPES: Lazy<Dependency> = Lazy::new(|| Dependency::new("casper-types", "1.4.2"));
+pub static CL_TYPES: Lazy<Dependency> = Lazy::new(|| Dependency::new("casper-types", "1.4.4"));
 pub static CL_ENGINE_TEST_SUPPORT: Lazy<Dependency> =
     Lazy::new(|| Dependency::new("casper-engine-test-support", "2.0.2"));
 pub static CL_EXECUTION_ENGINE: Lazy<Dependency> =

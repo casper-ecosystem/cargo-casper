@@ -6,7 +6,9 @@ use std::path::PathBuf;
 use once_cell::sync::Lazy;
 
 use crate::{
-    common::{self, CL_CONTRACT, CL_ENGINE_TEST_SUPPORT, CL_TYPES, PATCH_SECTION},
+    common::{
+        self, CL_CONTRACT, CL_ENGINE_TEST_SUPPORT, CL_EXECUTION_ENGINE, CL_TYPES, PATCH_SECTION,
+    },
     ARGS,
 };
 
@@ -19,10 +21,11 @@ static INTEGRATION_TESTS_RS: Lazy<PathBuf> =
 
 pub static TEST_DEPENDENCIES: Lazy<String> = Lazy::new(|| {
     format!(
-        "{}{}{}",
+        "{}{}{}{}",
         CL_CONTRACT.display_with_features(false, vec!["test-support"]),
         CL_ENGINE_TEST_SUPPORT.display_with_features(true, vec!["test-support"]),
-        CL_TYPES.display_with_features(true, vec![]),
+        CL_EXECUTION_ENGINE.display_with_features(true, vec![]),
+        CL_TYPES.display_with_features(true, vec![])
     )
 });
 
