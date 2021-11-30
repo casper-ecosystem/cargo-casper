@@ -15,6 +15,14 @@ All notable changes to this project will be documented in this file.  The format
 
 
 
+## [2.0.0] - 2021-11-30
+
+### Changed
+* Update to use the v2 `casper-engine-test-support` crate in generated projects' tests.
+* Move from casper-node monorepo to its own standalone repo.
+
+
+
 ## [1.4.2] - 2021-11-13
 
 ### Removed
@@ -106,7 +114,8 @@ No changes.
 
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0
-[unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.2...main
+[unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.0...main
+[2.0.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.2...v2.0.0
 [1.4.2]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.3.3...v1.4.0
