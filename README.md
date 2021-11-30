@@ -35,15 +35,18 @@ This creates the following files:
 ```
 my_project/
 ├── contract
+│   ├── .cargo
+│   │   └── config.toml
 │   ├── Cargo.toml
 │   └── src
 │       └── main.rs
 ├── Makefile
 ├── rust-toolchain
-└── tests
-    ├── Cargo.toml
-    └── src
-        └── integration_tests.rs
+├── tests
+│   ├── Cargo.toml
+│   └── src
+│       └── integration_tests.rs
+└── .travis.yml
 ```
 
 ### Building the contract
