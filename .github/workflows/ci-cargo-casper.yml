@@ -19,11 +19,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Get nightly toolchain from file
+        id: nightly-toolchain
+        run: echo "::set-output name=version::$(cat resources/rust-toolchain.in)"
+
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: ${{ steps.nightly-toolchain.outputs.version }}
           profile: minimal
           components: rustfmt, clippy
+          target: wasm32-unknown-unknown
 
       - name: Fmt
         uses: actions-rs/cargo@v1

@@ -2,14 +2,6 @@
 
 #![deny(warnings)]
 
-use std::{
-    env,
-    path::{Path, PathBuf},
-};
-
-use clap::{crate_description, crate_name, crate_version, App, Arg};
-use once_cell::sync::Lazy;
-
 pub mod common;
 mod contract_package;
 pub mod dependency;
@@ -17,6 +9,14 @@ mod makefile;
 mod rust_toolchain;
 mod tests_package;
 mod travis_yml;
+
+use std::{
+    env,
+    path::{Path, PathBuf},
+};
+
+use clap::{crate_description, crate_name, crate_version, App, Arg};
+use once_cell::sync::Lazy;
 
 const USAGE: &str = r#"cargo casper [FLAGS] <path>
     cd <path>
@@ -30,14 +30,30 @@ const ROOT_PATH_ARG_ABOUT: &str = "Path to new folder for contract and tests";
 const WORKSPACE_PATH_ARG_NAME: &str = "workspace-path";
 const WORKSPACE_PATH_ARG_LONG: &str = "workspace-path";
 
+const GIT_URL_ARG_NAME: &str = "git-url";
+const GIT_URL_LONG: &str = "git-url";
+
+const GIT_BRANCH_ARG_NAME: &str = "git-branch";
+const GIT_BRANCH_LONG: &str = "git-branch";
+
 const FAILURE_EXIT_CODE: i32 = 101;
 
 static ARGS: Lazy<Args> = Lazy::new(Args::new);
 
+/// Can be used (via hidden command line args) to specify a patch section for the casper crates in
+/// the generated Cargo.toml files.
+#[derive(Debug)]
+enum CasperOverrides {
+    /// The path to local copy of the casper-node repository.
+    WorkspacePath(PathBuf),
+    /// The details of an online copy of the casper-node repository.
+    GitRepo { url: String, branch: String },
+}
+
 #[derive(Debug)]
 struct Args {
     root_path: PathBuf,
-    workspace_path: Option<PathBuf>,
+    casper_overrides: Option<CasperOverrides>,
 }
 
 impl Args {
@@ -69,12 +85,28 @@ impl Args {
             .takes_value(true)
             .hidden(true);
 
+        let git_url_arg = Arg::new(GIT_URL_ARG_NAME)
+            .long(GIT_URL_LONG)
+            .takes_value(true)
+            .hidden(true)
+            .conflicts_with(WORKSPACE_PATH_ARG_NAME)
+            .requires(GIT_BRANCH_ARG_NAME);
+
+        let git_branch_arg = Arg::new(GIT_BRANCH_ARG_NAME)
+            .long(GIT_BRANCH_LONG)
+            .takes_value(true)
+            .hidden(true)
+            .conflicts_with(WORKSPACE_PATH_ARG_NAME)
+            .requires(GIT_URL_ARG_NAME);
+
         let arg_matches = App::new(crate_name!())
             .version(crate_version!())
             .about(crate_description!())
             .override_usage(USAGE)
             .arg(root_path_arg)
             .arg(workspace_path_arg)
+            .arg(git_url_arg)
+            .arg(git_branch_arg)
             .get_matches_from(filtered_args_iter);
 
         let root_path = arg_matches
@@ -82,13 +114,23 @@ impl Args {
             .expect("expected path")
             .into();
 
-        let workspace_path = arg_matches
-            .value_of(WORKSPACE_PATH_ARG_NAME)
-            .map(PathBuf::from);
+        let maybe_workspace_path = arg_matches.value_of(WORKSPACE_PATH_ARG_NAME);
+        let maybe_git_url = arg_matches.value_of(GIT_URL_ARG_NAME);
+        let maybe_git_branch = arg_matches.value_of(GIT_BRANCH_ARG_NAME);
+
+        let casper_overrides = match (maybe_workspace_path, maybe_git_url, maybe_git_branch) {
+            (Some(path), None, None) => Some(CasperOverrides::WorkspacePath(path.into())),
+            (None, Some(url), Some(branch)) => Some(CasperOverrides::GitRepo {
+                url: url.to_string(),
+                branch: branch.to_string(),
+            }),
+            (None, None, None) => None,
+            _ => unreachable!("Clap rules enforce either both or neither git args are present"),
+        };
 
         Args {
             root_path,
-            workspace_path,
+            casper_overrides,
         }
     }
 
@@ -96,8 +138,8 @@ impl Args {
         &self.root_path
     }
 
-    pub fn workspace_path(&self) -> Option<&Path> {
-        self.workspace_path.as_deref()
+    pub fn casper_overrides(&self) -> Option<&CasperOverrides> {
+        self.casper_overrides.as_ref()
     }
 }
 

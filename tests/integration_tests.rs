@@ -1,14 +1,13 @@
 use std::{fs, process::Output};
 
 use assert_cmd::Command;
-use once_cell::sync::Lazy;
 
 const FAILURE_EXIT_CODE: i32 = 101;
 const SUCCESS_EXIT_CODE: i32 = 0;
 const TEST_PATH: &str = "test";
-
-static WORKSPACE_PATH_ARG: Lazy<String> =
-    Lazy::new(|| format!("--workspace-path={}/../../", env!("CARGO_MANIFEST_DIR")));
+// TODO - uncomment
+// const GIT_URL_ARG: &str = "--git-url=https://github.com/casper-network/casper-node";
+// const GIT_BRANCH_ARG: &str = "--git-branch=dev";
 
 #[test]
 fn should_fail_when_target_path_already_exists() {
@@ -46,16 +45,17 @@ fn output_from_command(mut command: Command) -> Output {
 }
 
 #[test]
-#[ignore]
 fn should_run_cargo_casper() {
     let temp_dir = tempfile::tempdir().unwrap().into_path();
 
-    // Run 'cargo-casper <test dir>/<subdir> --workspace-path=<path to casper-node root>'
+    // Run 'cargo-casper <test dir>/<subdir>'
     let subdir = TEST_PATH;
     let test_dir = temp_dir.join(subdir);
     let mut tool_cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     tool_cmd.arg(&test_dir);
-    tool_cmd.arg(&*WORKSPACE_PATH_ARG);
+    // TODO - uncomment
+    // tool_cmd.arg(GIT_URL_ARG);
+    // tool_cmd.arg(GIT_BRANCH_ARG);
 
     // The CI environment doesn't have a Git user configured, so we can set the env var `USER` for
     // use by 'cargo new' which is called as a subprocess of 'cargo-casper'.
@@ -68,7 +68,7 @@ fn should_run_cargo_casper() {
     // execute the appropriate cargo version.
     let mut test_cmd = Command::new("rustup");
     let nightly_version = fs::read_to_string(format!(
-        "{}/../../smart_contracts/rust-toolchain",
+        "{}/resources/rust-toolchain.in",
         env!("CARGO_MANIFEST_DIR")
     ))
     .unwrap();

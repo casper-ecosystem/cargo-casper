@@ -1,8 +1,7 @@
 use crate::{common, ARGS};
 
 const FILENAME: &str = "rust-toolchain";
-pub const CONTENTS: &str = r#"nightly-2021-06-17
-"#;
+const CONTENTS: &str = include_str!("../resources/rust-toolchain.in");
 
 pub fn create() {
     common::write_file(ARGS.root_path().join(FILENAME), CONTENTS);
@@ -10,29 +9,21 @@ pub fn create() {
 
 #[cfg(test)]
 mod tests {
-    use std::{env, fs};
+    use reqwest::blocking;
 
     use super::CONTENTS;
 
-    const PATH_PREFIX: &str = "/execution_engine_testing/cargo_casper";
+    const CASPER_NODE_TOOLCHAIN_URL: &str =
+        "https://raw.githubusercontent.com/casper-network/casper-node/dev/smart_contracts/rust-toolchain";
 
     #[test]
-    #[ignore]
     fn check_toolchain_version() {
-        let mut toolchain_path = env::current_dir().unwrap().display().to_string();
-        let index = toolchain_path.find(PATH_PREFIX).unwrap_or_else(|| {
-            panic!(
-                "test should be run from within casper-node workspace: {}",
-                toolchain_path
-            )
-        });
-        toolchain_path.replace_range(index.., "/smart_contracts/rust-toolchain");
+        let expected_toolchain_value = blocking::get(CASPER_NODE_TOOLCHAIN_URL)
+            .expect("should get rust-toolchain from GitHub")
+            .text()
+            .expect("should parse rust-toolchain");
 
-        let toolchain_contents =
-            fs::read(&toolchain_path).unwrap_or_else(|_| panic!("should read {}", toolchain_path));
-        let expected_toolchain_value = String::from_utf8_lossy(&toolchain_contents).to_string();
-
-        // If this fails, ensure `CONTENTS` is updated to match the value in
+        // If this fails, ensure ../resources/rust-toolchain.in is updated to match the value in
         // "casper-node/rust-toolchain".
         assert_eq!(&*expected_toolchain_value, CONTENTS);
     }
