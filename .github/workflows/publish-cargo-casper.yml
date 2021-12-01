@@ -20,5 +20,5 @@ jobs:
       - name: Crate Publish
         uses: actions-rs/cargo@v1
         with:
-          command: publish
-          args: --token ${{ secrets.crates_io_token }}
+          command: --locked
+          args: publish --token ${{ secrets.crates_io_token }}
