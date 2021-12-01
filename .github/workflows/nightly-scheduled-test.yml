@@ -1,0 +1,31 @@
+---
+name: nightly-scheduled-test
+
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # runs every day at midnight
+    - cron: "0 0 * * *"
+
+jobs:
+  nightly-cargo-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get nightly toolchain from file
+        id: nightly-toolchain
+        run: echo "::set-output name=version::$(cat resources/rust-toolchain.in)"
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ steps.nightly-toolchain.outputs.version }}
+          profile: minimal
+          components: rustfmt, clippy
+          target: wasm32-unknown-unknown
+
+      - name: Test
+        uses: actions-rs/cargo@v1
+        with:
+          command: --locked
+          args: test
