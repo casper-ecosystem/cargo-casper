@@ -34,21 +34,23 @@ jobs:
       - name: Fmt
         uses: actions-rs/cargo@v1
         with:
-          command: fmt
-          args: -- --check
+          command: --locked
+          args: fmt -- --check
 
       - name: Audit
         uses: actions-rs/cargo@v1
         with:
-          command: audit
+          command: --locked
+          args: audit
 
       - name: Clippy
         uses: actions-rs/cargo@v1
         with:
-          command: clippy
-          args: --all-targets
+          command: --locked
+          args: clippy --all-targets
 
       - name: Test
         uses: actions-rs/cargo@v1
         with:
-          command: test
+          command: --locked
+          args: test
