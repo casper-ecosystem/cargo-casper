@@ -29,3 +29,11 @@ jobs:
         with:
           command: --locked
           args: test
+
+      - name: Slack Notification
+        uses: ravsamhq/notify-slack-action@v1
+        if: always()
+        with:
+          status: ${{ job.status }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
