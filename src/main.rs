@@ -5,6 +5,7 @@
 pub mod common;
 mod contract_package;
 pub mod dependency;
+mod git;
 mod makefile;
 mod rust_toolchain;
 mod tests_package;
@@ -157,4 +158,5 @@ fn main() {
     rust_toolchain::create();
     makefile::create();
     travis_yml::create();
+    git::init();
 }

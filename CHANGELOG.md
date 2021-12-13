@@ -13,6 +13,8 @@ All notable changes to this project will be documented in this file.  The format
 
 ## [Unreleased]
 
+### Changed
+* Now creates an empty git repository in the root of the generated project.
 
 
 ## [2.0.0] - 2021-11-30
