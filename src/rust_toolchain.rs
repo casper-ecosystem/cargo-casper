@@ -23,8 +23,8 @@ mod tests {
             .text()
             .expect("should parse rust-toolchain");
 
-        // If this fails, ensure ../resources/rust-toolchain.in is updated to match the value in
-        // "casper-node/rust-toolchain".
+        // If this fails, ensure there's not a mismatch between ../resources/rust-toolchain.in and
+        // https://github.com/casper-network/casper-node/blob/dev/smart_contracts/rust-toolchain.
         assert_eq!(&*expected_toolchain_value, CONTENTS);
     }
 }
