@@ -30,6 +30,16 @@ jobs:
           command: --locked
           args: test
 
+      - name: Update
+        uses: actions-rs/cargo@v1
+        with:
+          command: update
+
+      - name: Build Updated
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+
       - name: Slack Notification
         uses: ravsamhq/notify-slack-action@v1
         if: always()

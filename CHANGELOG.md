@@ -13,6 +13,9 @@ All notable changes to this project will be documented in this file.  The format
 
 ## [Unreleased]
 
+### Changed
+* Updated dependencies.
+
 
 
 ## [2.0.0] - 2021-11-30
