@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.  The format
 
 ## [Unreleased]
 
+
+
+## [2.0.1] - 2021-12-17
+
 ### Changed
 * Updated dependencies.
 
@@ -117,7 +121,8 @@ No changes.
 
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0
-[unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.0...main
+[unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.1...main
+[2.0.1]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.2...v2.0.0
 [1.4.2]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.0...v1.4.1
