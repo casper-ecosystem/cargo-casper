@@ -31,7 +31,8 @@ target = "wasm32-unknown-unknown"
 
 static CARGO_TOML_CONTENTS: Lazy<String> = Lazy::new(|| {
     format!(
-        r#"[package]
+        r#"cargo-features = ["edition2021"]
+        [package]
 name = "{}"
 version = "0.1.0"
 edition = "2018"
