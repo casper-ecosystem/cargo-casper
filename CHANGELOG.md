@@ -15,6 +15,13 @@ All notable changes to this project will be documented in this file.  The format
 
 
 
+## [2.0.3] - 2022-02-07
+
+### Changed
+* Updated pinned version of Rust toolchain and dependencies.
+
+
+
 ## [2.0.2] - 2022-01-06
 
 ### Changed
@@ -128,7 +135,8 @@ No changes.
 
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0
-[unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.2...main
+[unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.3...main
+[2.0.3]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.2...v2.0.3
 [2.0.2]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v1.4.2...v2.0.0
