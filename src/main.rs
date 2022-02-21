@@ -15,7 +15,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use clap::{crate_description, crate_name, crate_version, App, Arg};
+use clap::{crate_description, crate_name, crate_version, Command, Arg};
 use once_cell::sync::Lazy;
 
 const USAGE: &str = r#"cargo casper [FLAGS] <path>
@@ -99,7 +99,7 @@ impl Args {
             .conflicts_with(WORKSPACE_PATH_ARG_NAME)
             .requires(GIT_URL_ARG_NAME);
 
-        let arg_matches = App::new(crate_name!())
+        let arg_matches = Command::new(crate_name!())
             .version(crate_version!())
             .about(crate_description!())
             .override_usage(USAGE)
