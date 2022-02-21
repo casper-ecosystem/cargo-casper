@@ -15,7 +15,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use clap::{crate_description, crate_name, crate_version, Command, Arg};
+use clap::{crate_description, crate_name, crate_version, Arg, Command};
 use once_cell::sync::Lazy;
 
 const USAGE: &str = r#"cargo casper [FLAGS] <path>
