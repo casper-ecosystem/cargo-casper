@@ -1,3 +1,5 @@
+use crate::ARGS;
+
 /// Used to hold the information about the Casper dependencies which will be required by the
 /// generated Cargo.toml files.
 #[derive(Debug)]
@@ -15,11 +17,17 @@ impl Dependency {
     }
 
     pub fn display_with_features(&self, default_features: bool, features: Vec<&str>) -> String {
+        let version = if ARGS.casper_overrides().is_some() {
+            "*"
+        } else {
+            &self.version
+        };
+
         if default_features && features.is_empty() {
-            return format!("{} = \"{}\"\n", self.name, self.version);
+            return format!("{} = \"{}\"\n", self.name, version);
         }
 
-        let mut output = format!(r#"{} = {{ version = "{}""#, self.name, self.version);
+        let mut output = format!(r#"{} = {{ version = "{}""#, self.name, version);
 
         if !default_features {
             output = format!("{}, default-features = false", output);
