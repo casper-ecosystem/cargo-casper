@@ -87,19 +87,35 @@ fn run_make_test_on_generated_project(maybe_git_branch_arg: Option<String>) {
     fs::remove_dir_all(&temp_dir).unwrap();
 }
 
+fn ci_branch_name() -> Option<String> {
+    if let Ok(branch_name) = env::var(PR_TARGET_BRANCH_NAME_ENV_VAR) {
+        if !branch_name.is_empty() {
+            return Some(branch_name);
+        }
+    }
+
+    if let Ok(branch_name) = env::var(CI_BRANCH_NAME_ENV_VAR) {
+        if !branch_name.is_empty() {
+            return Some(branch_name);
+        }
+    }
+
+    None
+}
+
 /// Checks that running `cargo-casper` with no specified overrides yields a generated project which
 /// passes `make test`.
 ///
 /// The generated project will have manifests which use the latest crates.io versions of the Casper
 /// dependencies.
 ///
-/// If `GITHUB_BASE_REF` or `GITHUB_REF_NAME` are set and specify `main`, the test is run.  If
-/// neither are set, the test is an auto-pass.
+/// If either `GITHUB_BASE_REF` or `GITHUB_REF_NAME` is set to `main`, the test is run.  If not, the
+/// test is an auto-pass.
 #[test]
 fn should_run_cargo_casper_using_published_crates() {
-    match env::var(PR_TARGET_BRANCH_NAME_ENV_VAR).or_else(|_| env::var(CI_BRANCH_NAME_ENV_VAR)) {
-        Ok(branch_name) if branch_name == "main" => (),
-        Ok(branch_name) => {
+    match ci_branch_name() {
+        Some(branch_name) if branch_name == "main" => (),
+        Some(branch_name) => {
             println!(
                 "skipping 'should_run_cargo_casper_using_published_crates' as branch name '{}' is \
                 not 'main'",
@@ -107,10 +123,10 @@ fn should_run_cargo_casper_using_published_crates() {
             );
             return;
         }
-        Err(_) => {
+        None => {
             println!(
-                "skipping 'should_run_cargo_casper_using_published_crates' as neither {} nor {} is \
-                set",
+                "skipping 'should_run_cargo_casper_using_published_crates' as {} and {} are unset \
+                or set to empty strings",
                 PR_TARGET_BRANCH_NAME_ENV_VAR, CI_BRANCH_NAME_ENV_VAR
             );
             return;
@@ -128,7 +144,13 @@ fn should_run_cargo_casper_using_published_crates() {
 /// will be as defined in the env var `GITHUB_BASE_REF` (for PRs) or `GITHUB_REF_NAME` (for other CI
 /// runs) which is set by GitHub actions.
 ///
-/// If neither `GITHUB_BASE_REF` nor `GITHUB_REF_NAME` is set, the test is an auto-pass.
+/// If neither `GITHUB_BASE_REF` nor `GITHUB_REF_NAME` is set, or they're both set to empty strings,
+/// the test is an auto-pass.
+///
+/// For testing locally, you can manually run e.g.
+/// ```
+/// GITHUB_BASE_REF=dev cargo t
+/// ```
 #[test]
 fn should_run_cargo_casper_using_git_overrides() {
     // TODO - remove the following block.
@@ -139,13 +161,12 @@ fn should_run_cargo_casper_using_git_overrides() {
         println!("{}: {:?}", CI_BRANCH_NAME_ENV_VAR, ci_branch);
     }
 
-    let git_branch_arg = if let Ok(branch_name) =
-        env::var(PR_TARGET_BRANCH_NAME_ENV_VAR).or_else(|_| env::var(CI_BRANCH_NAME_ENV_VAR))
-    {
+    let git_branch_arg = if let Some(branch_name) = ci_branch_name() {
         format!("--git-branch={}", branch_name)
     } else {
         println!(
-            "skipping 'should_run_cargo_casper_using_git_overrides' as neither {} nor {} is set",
+            "skipping 'should_run_cargo_casper_using_git_overrides' as {} and {} are unset or set \
+            to empty strings",
             PR_TARGET_BRANCH_NAME_ENV_VAR, CI_BRANCH_NAME_ENV_VAR
         );
         return;
