@@ -6,6 +6,10 @@ const FAILURE_EXIT_CODE: i32 = 101;
 const SUCCESS_EXIT_CODE: i32 = 0;
 const TEST_PATH: &str = "test";
 const GIT_URL_ARG: &str = "--git-url=https://github.com/casper-network/casper-node";
+/// GitHub Actions doesn't have good support for running scheduled jobs on non-default branches.
+/// To work around this, our CI configuration will set an env var `BRANCH_SELECTOR` to the
+/// appropriate branch name.  It will be unset on non-scheduled runs (e.g. merges, PRs).
+const CRON_JOB_BRANCH_NAME_ENV_VAR: &str = "BRANCH_SELECTOR";
 const PR_TARGET_BRANCH_NAME_ENV_VAR: &str = "GITHUB_BASE_REF";
 const CI_BRANCH_NAME_ENV_VAR: &str = "GITHUB_REF_NAME";
 
@@ -88,6 +92,12 @@ fn run_make_test_on_generated_project(maybe_git_branch_arg: Option<String>) {
 }
 
 fn ci_branch_name() -> Option<String> {
+    if let Ok(branch_name) = env::var(CRON_JOB_BRANCH_NAME_ENV_VAR) {
+        if !branch_name.is_empty() {
+            return Some(branch_name);
+        }
+    }
+
     if let Ok(branch_name) = env::var(PR_TARGET_BRANCH_NAME_ENV_VAR) {
         if !branch_name.is_empty() {
             return Some(branch_name);
@@ -109,8 +119,8 @@ fn ci_branch_name() -> Option<String> {
 /// The generated project will have manifests which use the latest crates.io versions of the Casper
 /// dependencies.
 ///
-/// If either `GITHUB_BASE_REF` or `GITHUB_REF_NAME` is set to `main`, the test is run.  If not, the
-/// test is an auto-pass.
+/// If `BRANCH_SELECTOR`, `GITHUB_BASE_REF` or `GITHUB_REF_NAME` is set to `main`, the test is run.
+/// If not, the test is an auto-pass.
 #[test]
 fn should_run_cargo_casper_using_published_crates() {
     match ci_branch_name() {
@@ -141,22 +151,24 @@ fn should_run_cargo_casper_using_published_crates() {
 ///
 /// The generated project will have manifests which use Git overrides for the Casper dependencies.
 /// The versions will all be specified as `"*"` and the override branch of the `casper-node` repo
-/// will be as defined in the env var `GITHUB_BASE_REF` (for PRs) or `GITHUB_REF_NAME` (for other CI
-/// runs) which is set by GitHub actions.
+/// will be as defined in the env var `BRANCH_SELECTOR` (for scheduled CI runs), `GITHUB_BASE_REF`
+/// (for PRs) or `GITHUB_REF_NAME` (for any other CI runs) which is set by GitHub actions.
 ///
-/// If neither `GITHUB_BASE_REF` nor `GITHUB_REF_NAME` is set, or they're both set to empty strings,
-/// the test is an auto-pass.
+/// If none of `BRANCH_SELECTOR`, `GITHUB_BASE_REF` and `GITHUB_REF_NAME` are set, or they're all
+/// set to empty strings, the test is an auto-pass.
 ///
 /// For testing locally, you can manually run e.g.
 /// ```
-/// GITHUB_BASE_REF=dev cargo t
+/// BRANCH_SELECTOR=dev cargo t
 /// ```
 #[test]
 fn should_run_cargo_casper_using_git_overrides() {
     // TODO - remove the following block.
     {
+        let branch_selector = env::var(CRON_JOB_BRANCH_NAME_ENV_VAR);
         let pr_target_branch = env::var(PR_TARGET_BRANCH_NAME_ENV_VAR);
         let ci_branch = env::var(CI_BRANCH_NAME_ENV_VAR);
+        println!("{}: {:?}", CRON_JOB_BRANCH_NAME_ENV_VAR, branch_selector);
         println!("{}: {:?}", PR_TARGET_BRANCH_NAME_ENV_VAR, pr_target_branch);
         println!("{}: {:?}", CI_BRANCH_NAME_ENV_VAR, ci_branch);
     }
