@@ -34,6 +34,8 @@ jobs:
 
       - name: Test
         uses: actions-rs/cargo@v1
+        env:
+          BRANCH_SELECTOR: ${{ matrix.branch }}
         with:
           command: --locked
           args: test
