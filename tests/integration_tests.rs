@@ -1,13 +1,17 @@
-use std::{fs, process::Output};
+use std::{env, fs, process::Output};
 
 use assert_cmd::Command;
 
 const FAILURE_EXIT_CODE: i32 = 101;
 const SUCCESS_EXIT_CODE: i32 = 0;
 const TEST_PATH: &str = "test";
-// TODO - uncomment
-// const GIT_URL_ARG: &str = "--git-url=https://github.com/casper-network/casper-node";
-// const GIT_BRANCH_ARG: &str = "--git-branch=dev";
+const GIT_URL_ARG: &str = "--git-url=https://github.com/casper-network/casper-node";
+/// GitHub Actions doesn't have good support for running scheduled jobs on non-default branches.
+/// To work around this, our CI configuration will set an env var `BRANCH_SELECTOR` to the
+/// appropriate branch name.  It will be unset on non-scheduled runs (e.g. merges, PRs).
+const CRON_JOB_BRANCH_NAME_ENV_VAR: &str = "BRANCH_SELECTOR";
+const PR_TARGET_BRANCH_NAME_ENV_VAR: &str = "GITHUB_BASE_REF";
+const CI_BRANCH_NAME_ENV_VAR: &str = "GITHUB_REF_NAME";
 
 #[test]
 fn should_fail_when_target_path_already_exists() {
@@ -44,8 +48,7 @@ fn output_from_command(mut command: Command) -> Output {
     }
 }
 
-#[test]
-fn should_run_cargo_casper() {
+fn run_make_test_on_generated_project(maybe_git_branch_arg: Option<String>) {
     let temp_dir = tempfile::tempdir().unwrap().into_path();
 
     // Run 'cargo-casper <test dir>/<subdir>'
@@ -53,9 +56,11 @@ fn should_run_cargo_casper() {
     let test_dir = temp_dir.join(subdir);
     let mut tool_cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     tool_cmd.arg(&test_dir);
-    // TODO - uncomment
-    // tool_cmd.arg(GIT_URL_ARG);
-    // tool_cmd.arg(GIT_BRANCH_ARG);
+    if let Some(git_branch_arg) = maybe_git_branch_arg {
+        // Append '--git-url=...' and '--git-branch=...' args.
+        tool_cmd.arg(GIT_URL_ARG);
+        tool_cmd.arg(git_branch_arg);
+    }
 
     // The CI environment doesn't have a Git user configured, so we can set the env var `USER` for
     // use by 'cargo new' which is called as a subprocess of 'cargo-casper'.
@@ -84,4 +89,100 @@ fn should_run_cargo_casper() {
 
     // Cleans up temporary directory, but leaves it otherwise if the test failed.
     fs::remove_dir_all(&temp_dir).unwrap();
+}
+
+fn ci_branch_name() -> Option<String> {
+    if let Ok(branch_name) = env::var(CRON_JOB_BRANCH_NAME_ENV_VAR) {
+        if !branch_name.is_empty() {
+            return Some(branch_name);
+        }
+    }
+
+    if let Ok(branch_name) = env::var(PR_TARGET_BRANCH_NAME_ENV_VAR) {
+        if !branch_name.is_empty() {
+            return Some(branch_name);
+        }
+    }
+
+    if let Ok(branch_name) = env::var(CI_BRANCH_NAME_ENV_VAR) {
+        if !branch_name.is_empty() {
+            return Some(branch_name);
+        }
+    }
+
+    None
+}
+
+/// Checks that running `cargo-casper` with no specified overrides yields a generated project which
+/// passes `make test`.
+///
+/// The generated project will have manifests which use the latest crates.io versions of the Casper
+/// dependencies.
+///
+/// If `BRANCH_SELECTOR`, `GITHUB_BASE_REF` or `GITHUB_REF_NAME` is set to `main`, the test is run.
+/// If not, the test is an auto-pass.
+#[test]
+fn should_run_cargo_casper_using_published_crates() {
+    match ci_branch_name() {
+        Some(branch_name) if branch_name == "main" => (),
+        Some(branch_name) => {
+            println!(
+                "skipping 'should_run_cargo_casper_using_published_crates' as branch name '{}' is \
+                not 'main'",
+                branch_name
+            );
+            return;
+        }
+        None => {
+            println!(
+                "skipping 'should_run_cargo_casper_using_published_crates' as {} and {} are unset \
+                or set to empty strings",
+                PR_TARGET_BRANCH_NAME_ENV_VAR, CI_BRANCH_NAME_ENV_VAR
+            );
+            return;
+        }
+    }
+
+    run_make_test_on_generated_project(None)
+}
+
+/// Checks that running `cargo-casper` with Git overrides yields a generated project which passes
+/// `make test`.
+///
+/// The generated project will have manifests which use Git overrides for the Casper dependencies.
+/// The versions will all be specified as `"*"` and the override branch of the `casper-node` repo
+/// will be as defined in the env var `BRANCH_SELECTOR` (for scheduled CI runs), `GITHUB_BASE_REF`
+/// (for PRs) or `GITHUB_REF_NAME` (for any other CI runs) which is set by GitHub actions.
+///
+/// If none of `BRANCH_SELECTOR`, `GITHUB_BASE_REF` and `GITHUB_REF_NAME` are set, or they're all
+/// set to empty strings, the test is an auto-pass.
+///
+/// For testing locally, you can manually run e.g.
+/// ```
+/// BRANCH_SELECTOR=dev cargo t
+/// ```
+#[test]
+fn should_run_cargo_casper_using_git_overrides() {
+    // TODO - remove the following block.
+    {
+        let branch_selector = env::var(CRON_JOB_BRANCH_NAME_ENV_VAR);
+        let pr_target_branch = env::var(PR_TARGET_BRANCH_NAME_ENV_VAR);
+        let ci_branch = env::var(CI_BRANCH_NAME_ENV_VAR);
+        println!("{}: {:?}", CRON_JOB_BRANCH_NAME_ENV_VAR, branch_selector);
+        println!("{}: {:?}", PR_TARGET_BRANCH_NAME_ENV_VAR, pr_target_branch);
+        println!("{}: {:?}", CI_BRANCH_NAME_ENV_VAR, ci_branch);
+    }
+
+    let git_branch_arg = if let Some(branch_name) = ci_branch_name() {
+        format!("--git-branch={}", branch_name)
+    } else {
+        println!(
+            "skipping 'should_run_cargo_casper_using_git_overrides' as {} and {} are unset or set \
+            to empty strings",
+            PR_TARGET_BRANCH_NAME_ENV_VAR, CI_BRANCH_NAME_ENV_VAR
+        );
+        return;
+    };
+
+    run_make_test_on_generated_project(Some(git_branch_arg))
 }
