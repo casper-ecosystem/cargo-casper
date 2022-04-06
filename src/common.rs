@@ -6,12 +6,12 @@ use once_cell::sync::Lazy;
 use crate::{dependency::Dependency, CasperOverrides, ARGS, FAILURE_EXIT_CODE};
 
 pub static CL_CONTRACT: Lazy<Dependency> =
-    Lazy::new(|| Dependency::new("casper-contract", "1.4.3"));
-pub static CL_TYPES: Lazy<Dependency> = Lazy::new(|| Dependency::new("casper-types", "1.4.6"));
+    Lazy::new(|| Dependency::new("casper-contract", "1.4.4"));
+pub static CL_TYPES: Lazy<Dependency> = Lazy::new(|| Dependency::new("casper-types", "1.5.0"));
 pub static CL_ENGINE_TEST_SUPPORT: Lazy<Dependency> =
-    Lazy::new(|| Dependency::new("casper-engine-test-support", "2.0.3"));
+    Lazy::new(|| Dependency::new("casper-engine-test-support", "2.1.0"));
 pub static CL_EXECUTION_ENGINE: Lazy<Dependency> =
-    Lazy::new(|| Dependency::new("casper-execution-engine", "1.4.4"));
+    Lazy::new(|| Dependency::new("casper-execution-engine", "1.5.0"));
 pub static PATCH_SECTION: Lazy<String> = Lazy::new(|| match ARGS.casper_overrides() {
     Some(CasperOverrides::WorkspacePath(path)) => {
         format!(
@@ -114,7 +114,8 @@ pub mod tests {
         assert_eq!(
             latest_publish_version,
             dep.version(),
-            "\n\nEnsure local version of {:?} is updated to {} as defined in last version of {}{}\n\n",
+            "\n\nEnsure local version of {:?} in common.rs is updated to {} as defined in last \
+            version of {}{}\n\n",
             dep,
             latest_publish_version,
             CRATES_IO_INDEX_URL_FOR_CASPER_CRATES,
