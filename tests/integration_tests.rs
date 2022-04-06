@@ -173,15 +173,22 @@ fn should_run_cargo_casper_using_git_overrides() {
         println!("{}: {:?}", CI_BRANCH_NAME_ENV_VAR, ci_branch);
     }
 
-    let git_branch_arg = if let Some(branch_name) = ci_branch_name() {
-        format!("--git-branch={}", branch_name)
-    } else {
-        println!(
-            "skipping 'should_run_cargo_casper_using_git_overrides' as {} and {} are unset or set \
+    let git_branch_arg = match ci_branch_name() {
+        Some(branch_name) if branch_name == "main" => {
+            println!(
+                "skipping 'should_run_cargo_casper_using_git_overrides' as branch name is 'main'"
+            );
+            return;
+        }
+        Some(branch_name) => format!("--git-branch={}", branch_name),
+        None => {
+            println!(
+                "skipping 'should_run_cargo_casper_using_git_overrides' as {} and {} are unset or set \
             to empty strings",
-            PR_TARGET_BRANCH_NAME_ENV_VAR, CI_BRANCH_NAME_ENV_VAR
-        );
-        return;
+                PR_TARGET_BRANCH_NAME_ENV_VAR, CI_BRANCH_NAME_ENV_VAR
+            );
+            return;
+        }
     };
 
     run_make_test_on_generated_project(Some(git_branch_arg))
