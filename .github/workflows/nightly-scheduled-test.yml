@@ -2,6 +2,8 @@
 name: nightly-scheduled-test
 
 on:
+  workflow_dispatch:
+
   schedule:
     # * is a special character in YAML so you have to quote this string
     # runs every day at midnight
@@ -9,9 +11,15 @@ on:
 
 jobs:
   nightly-cargo-test:
+    strategy:
+      matrix:
+        branch: [main, dev]
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ matrix.branch }}
 
       - name: Get nightly toolchain from file
         id: nightly-toolchain
@@ -26,6 +34,8 @@ jobs:
 
       - name: Test
         uses: actions-rs/cargo@v1
+        env:
+          BRANCH_SELECTOR: ${{ matrix.branch }}
         with:
           command: --locked
           args: test
@@ -45,7 +55,7 @@ jobs:
         if: always()
         with:
           status: ${{ job.status }}
-          notification_title: "*{repo}*"
+          notification_title: "*{repo}* ${{ matrix.branch }}"
           message_format: "{emoji} *{workflow}:* *{status_message}* in <{repo_url}|{repo}@{branch}> on <{commit_url}|{commit_sha}>"
           footer: "<{run_url}|View Run>"
         env:
