@@ -15,7 +15,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use clap::{crate_description, crate_name, crate_version, Arg, Command};
+use clap::{builder::ValueParser, crate_description, crate_name, crate_version, Arg, Command};
 use once_cell::sync::Lazy;
 
 const USAGE: &str = r#"cargo casper [FLAGS] <path>
@@ -76,6 +76,7 @@ impl Args {
         });
 
         let root_path_arg = Arg::new(ROOT_PATH_ARG_NAME)
+            .value_parser(ValueParser::path_buf())
             .required(true)
             .value_name(ROOT_PATH_ARG_VALUE_NAME)
             .help(ROOT_PATH_ARG_HELP);
@@ -110,13 +111,13 @@ impl Args {
             .get_matches_from(filtered_args_iter);
 
         let root_path = arg_matches
-            .value_of(ROOT_PATH_ARG_NAME)
+            .get_one::<PathBuf>(ROOT_PATH_ARG_NAME)
             .expect("expected path")
-            .into();
+            .clone();
 
-        let maybe_workspace_path = arg_matches.value_of(WORKSPACE_PATH_ARG_NAME);
-        let maybe_git_url = arg_matches.value_of(GIT_URL_ARG_NAME);
-        let maybe_git_branch = arg_matches.value_of(GIT_BRANCH_ARG_NAME);
+        let maybe_workspace_path = arg_matches.get_one::<String>(WORKSPACE_PATH_ARG_NAME);
+        let maybe_git_url = arg_matches.get_one::<String>(GIT_URL_ARG_NAME);
+        let maybe_git_branch = arg_matches.get_one::<String>(GIT_BRANCH_ARG_NAME);
 
         let casper_overrides = match (maybe_workspace_path, maybe_git_url, maybe_git_branch) {
             (Some(path), None, None) => Some(CasperOverrides::WorkspacePath(path.into())),
