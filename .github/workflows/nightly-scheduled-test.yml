@@ -13,7 +13,7 @@ jobs:
   nightly-cargo-test:
     strategy:
       matrix:
-        branch: [main, dev]
+        branch: [main, dev, feat-private-chain]
     runs-on: ubuntu-latest
 
     steps:
