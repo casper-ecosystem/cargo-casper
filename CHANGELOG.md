@@ -13,6 +13,9 @@ All notable changes to this project will be documented in this file.  The format
 
 ## [Unreleased]
 
+### Changed
+* Update pinned version of Rust toolchain and dependencies.
+
 
 
 ## [2.0.5] - 2022-05-13
