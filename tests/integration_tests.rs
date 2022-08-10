@@ -82,6 +82,7 @@ fn run_make_test_on_generated_project(maybe_git_branch_arg: Option<String>) {
         .arg(nightly_version.trim())
         .arg("make")
         .arg("test")
+        .env("RUSTFLAGS", "-D warnings")
         .current_dir(test_dir);
 
     let test_output = output_from_command(test_cmd);
@@ -183,8 +184,8 @@ fn should_run_cargo_casper_using_git_overrides() {
         Some(branch_name) => format!("--git-branch={}", branch_name),
         None => {
             println!(
-                "skipping 'should_run_cargo_casper_using_git_overrides' as {} and {} are unset or set \
-            to empty strings",
+                "skipping 'should_run_cargo_casper_using_git_overrides' as {} and {} are unset or \
+                set to empty strings",
                 PR_TARGET_BRANCH_NAME_ENV_VAR, CI_BRANCH_NAME_ENV_VAR
             );
             return;

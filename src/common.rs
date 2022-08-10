@@ -66,6 +66,8 @@ pub fn write_file<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) {
 
 #[cfg(test)]
 pub mod tests {
+    use std::ops::Deref;
+
     use reqwest::blocking;
     use serde_json::Value;
 
@@ -125,21 +127,21 @@ pub mod tests {
 
     #[test]
     fn check_cl_contract_version() {
-        check_latest_published_casper_package_version(&*CL_CONTRACT);
+        check_latest_published_casper_package_version(CL_CONTRACT.deref());
     }
 
     #[test]
     fn check_cl_types_version() {
-        check_latest_published_casper_package_version(&*CL_TYPES);
+        check_latest_published_casper_package_version(CL_TYPES.deref());
     }
 
     #[test]
     fn check_cl_engine_test_support_version() {
-        check_latest_published_casper_package_version(&*CL_ENGINE_TEST_SUPPORT);
+        check_latest_published_casper_package_version(CL_ENGINE_TEST_SUPPORT.deref());
     }
 
     #[test]
     fn check_cl_execution_engine_version() {
-        check_latest_published_casper_package_version(&*CL_EXECUTION_ENGINE);
+        check_latest_published_casper_package_version(CL_EXECUTION_ENGINE.deref());
     }
 }

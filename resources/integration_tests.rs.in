@@ -6,7 +6,7 @@ mod tests {
         DeployItemBuilder, ExecuteRequestBuilder, InMemoryWasmTestBuilder, ARG_AMOUNT,
         DEFAULT_ACCOUNT_ADDR, DEFAULT_ACCOUNT_INITIAL_BALANCE, DEFAULT_CHAINSPEC_REGISTRY,
         DEFAULT_GENESIS_CONFIG, DEFAULT_GENESIS_CONFIG_HASH, DEFAULT_PAYMENT,
-        DEFAULT_RUN_GENESIS_REQUEST,
+        PRODUCTION_RUN_GENESIS_REQUEST,
     };
     use casper_execution_engine::core::engine_state::{
         run_genesis_request::RunGenesisRequest, GenesisAccount,
@@ -111,8 +111,11 @@ mod tests {
         let execute_request = ExecuteRequestBuilder::from_deploy_item(deploy_item).build();
 
         let mut builder = InMemoryWasmTestBuilder::default();
-        builder.run_genesis(&DEFAULT_RUN_GENESIS_REQUEST).commit();
-        builder.exec(execute_request).commit().expect_failure();
+        builder
+            .run_genesis(&PRODUCTION_RUN_GENESIS_REQUEST)
+            .exec(execute_request)
+            .commit()
+            .expect_failure();
     }
 }
 
