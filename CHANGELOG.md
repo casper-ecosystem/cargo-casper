@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.  The format
 ## [Unreleased]
 
 ### Changed
-* Update pinned version of Rust toolchain and dependencies.
+* Update pinned version of Rust toolchain to `nightly-2022-08-03` and update dependencies.
 
 
 
@@ -35,7 +35,7 @@ All notable changes to this project will be documented in this file.  The format
 ## [2.0.3] - 2022-02-07
 
 ### Changed
-* Update pinned version of Rust toolchain and dependencies.
+* Update pinned version of Rust toolchain to `nightly-2022-01-13` and update dependencies.
 
 
 
