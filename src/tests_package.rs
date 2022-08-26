@@ -57,7 +57,7 @@ pub fn create() {
     common::create_dir_all(tests_folder);
 
     // Write "tests/integration_tests.rs".
-    common::write_file(&*INTEGRATION_TESTS_RS, &*INTEGRATION_TESTS_RS_CONTENTS);
+    common::write_file(&*INTEGRATION_TESTS_RS, INTEGRATION_TESTS_RS_CONTENTS);
 
     // Write "tests/Cargo.toml".
     common::write_file(&*CARGO_TOML, &*CARGO_TOML_CONTENTS);
