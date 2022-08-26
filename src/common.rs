@@ -11,7 +11,7 @@ pub static CL_TYPES: Lazy<Dependency> = Lazy::new(|| Dependency::new("casper-typ
 pub static CL_ENGINE_TEST_SUPPORT: Lazy<Dependency> =
     Lazy::new(|| Dependency::new("casper-engine-test-support", "2.2.0"));
 pub static CL_EXECUTION_ENGINE: Lazy<Dependency> =
-    Lazy::new(|| Dependency::new("casper-execution-engine", "2.0.0"));
+    Lazy::new(|| Dependency::new("casper-execution-engine", "2.0.1"));
 pub static PATCH_SECTION: Lazy<String> = Lazy::new(|| match ARGS.casper_overrides() {
     Some(CasperOverrides::WorkspacePath(path)) => {
         format!(
