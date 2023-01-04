@@ -83,19 +83,16 @@ impl Args {
 
         let workspace_path_arg = Arg::new(WORKSPACE_PATH_ARG_NAME)
             .long(WORKSPACE_PATH_ARG_LONG)
-            .takes_value(true)
             .hide(true);
 
         let git_url_arg = Arg::new(GIT_URL_ARG_NAME)
             .long(GIT_URL_LONG)
-            .takes_value(true)
             .hide(true)
             .conflicts_with(WORKSPACE_PATH_ARG_NAME)
             .requires(GIT_BRANCH_ARG_NAME);
 
         let git_branch_arg = Arg::new(GIT_BRANCH_ARG_NAME)
             .long(GIT_BRANCH_LONG)
-            .takes_value(true)
             .hide(true)
             .conflicts_with(WORKSPACE_PATH_ARG_NAME)
             .requires(GIT_URL_ARG_NAME);
