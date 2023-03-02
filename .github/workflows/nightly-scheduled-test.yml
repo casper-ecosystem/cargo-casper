@@ -9,13 +9,16 @@ on:
     # runs every day at midnight
     - cron: "0 0 * * *"
 
+permissions:
+  contents: write
+
 jobs:
   nightly-cargo-test:
     strategy:
       matrix:
         branch: [main, dev]
-    runs-on: ubuntu-latest
-
+        os: [ubuntu-20.04, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
         with:
