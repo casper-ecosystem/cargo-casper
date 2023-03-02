@@ -9,6 +9,9 @@ on:
     # runs every day at midnight
     - cron: "0 0 * * *"
 
+permissions:
+  contents: write
+
 jobs:
   nightly-cargo-test:
     strategy:
