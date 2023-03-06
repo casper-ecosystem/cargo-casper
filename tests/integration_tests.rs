@@ -125,11 +125,11 @@ fn ci_branch_name() -> Option<String> {
 #[test]
 fn should_run_cargo_casper_using_published_crates() {
     match ci_branch_name() {
-        Some(branch_name) if branch_name == "main" => (),
+        Some(branch_name) if branch_name == "main" || branch_name.starts_with("release-") => (),
         Some(branch_name) => {
             println!(
                 "skipping 'should_run_cargo_casper_using_published_crates' as branch name '{}' is \
-                not 'main'",
+                not 'main' and doesn't start with 'release-'",
                 branch_name
             );
             return;
@@ -175,9 +175,10 @@ fn should_run_cargo_casper_using_git_overrides() {
     }
 
     let git_branch_arg = match ci_branch_name() {
-        Some(branch_name) if branch_name == "main" => {
+        Some(branch_name) if branch_name == "main" || branch_name.starts_with("release-") => {
             println!(
-                "skipping 'should_run_cargo_casper_using_git_overrides' as branch name is 'main'"
+                "skipping 'should_run_cargo_casper_using_git_overrides' as branch name is 'main' \
+                or starts with 'release-'"
             );
             return;
         }
