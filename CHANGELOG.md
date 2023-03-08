@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.  The format
 
 
 
-## [2.0.7] - 2023-03-06
+## [2.0.7] - 2023-03-08
 
 ### Changed
 * Update pinned version of Rust toolchain to `nightly-2022-08-03` and update dependencies.
