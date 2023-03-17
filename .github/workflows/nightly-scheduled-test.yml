@@ -16,7 +16,10 @@ jobs:
   nightly-cargo-test:
     strategy:
       matrix:
-        branch: [main, dev]
+        branch:
+          - 'dev'
+          - 'release-*'
+          - '!release-2.0.6'
         os: [ubuntu-20.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     steps:
