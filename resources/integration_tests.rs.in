@@ -4,8 +4,9 @@ mod tests {
 
     use casper_engine_test_support::{
         DeployItemBuilder, ExecuteRequestBuilder, InMemoryWasmTestBuilder, ARG_AMOUNT,
-        DEFAULT_ACCOUNT_ADDR, DEFAULT_ACCOUNT_INITIAL_BALANCE, DEFAULT_GENESIS_CONFIG,
-        DEFAULT_GENESIS_CONFIG_HASH, DEFAULT_PAYMENT, PRODUCTION_RUN_GENESIS_REQUEST,
+        DEFAULT_ACCOUNT_ADDR, DEFAULT_ACCOUNT_INITIAL_BALANCE, DEFAULT_CHAINSPEC_REGISTRY,
+        DEFAULT_GENESIS_CONFIG, DEFAULT_GENESIS_CONFIG_HASH, DEFAULT_PAYMENT,
+        PRODUCTION_RUN_GENESIS_REQUEST,
     };
     use casper_execution_engine::core::engine_state::{
         run_genesis_request::RunGenesisRequest, GenesisAccount,
@@ -43,6 +44,7 @@ mod tests {
             *DEFAULT_GENESIS_CONFIG_HASH,
             genesis_config.protocol_version(),
             genesis_config.take_ee_config(),
+            DEFAULT_CHAINSPEC_REGISTRY.clone(),
         );
         // The test framework checks for compiled Wasm files in '<current working dir>/wasm'.  Paths
         // relative to the current working dir (e.g. 'wasm/contract.wasm') can also be used, as can
