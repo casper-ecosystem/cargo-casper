@@ -9,8 +9,9 @@ mod tests {
         PRODUCTION_RUN_GENESIS_REQUEST,
     };
     use casper_execution_engine::core::engine_state::{
-        run_genesis_request::RunGenesisRequest, GenesisAccount,
+        run_genesis_request::RunGenesisRequest, Error as EngineStateError, GenesisAccount,
     };
+    use casper_execution_engine::core::execution;
     use casper_types::{
         account::AccountHash, runtime_args, Key, Motes, PublicKey, RuntimeArgs, SecretKey, U512,
     };
@@ -94,16 +95,12 @@ mod tests {
 
     #[test]
     fn should_error_on_missing_runtime_arg() {
-        let secret_key = SecretKey::ed25519_from_bytes(MY_ACCOUNT).unwrap();
-        let public_key = PublicKey::from(&secret_key);
-        let account_addr = AccountHash::from(&public_key);
-
         let session_code = PathBuf::from(CONTRACT_WASM);
         let session_args = RuntimeArgs::new();
 
         let deploy_item = DeployItemBuilder::new()
             .with_empty_payment_bytes(runtime_args! {ARG_AMOUNT => *DEFAULT_PAYMENT})
-            .with_authorization_keys(&[account_addr])
+            .with_authorization_keys(&[*DEFAULT_ACCOUNT_ADDR])
             .with_address(*DEFAULT_ACCOUNT_ADDR)
             .with_session_code(session_code, session_args)
             .build();
@@ -116,6 +113,21 @@ mod tests {
             .exec(execute_request)
             .commit()
             .expect_failure();
+
+        let error = ApiError::MissingArgument;
+        let error_code: u32 = error.into();
+        let actual_error = builder.get_error().expect("must have error");
+        let reason = "should error on missing runtime_arg";
+        let actual = format!("{actual_error:?}");
+        let expected = format!(
+            "{:?}",
+            EngineStateError::Exec(execution::Error::Revert(error))
+        );
+
+        assert_eq!(
+            actual, expected,
+            "Error should match {error_code} with reason: {reason}"
+        )
     }
 }
 
