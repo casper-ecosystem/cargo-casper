@@ -72,7 +72,7 @@ mod tests {
         // prepare assertions.
         let result_of_query = builder.query(
             None,
-            Key::Account(*DEFAULT_ACCOUNT_ADDR),
+            Key::Account(account_addr),
             &[KEY.to_string()],
         );
         assert!(result_of_query.is_err());
