@@ -11,6 +11,13 @@ All notable changes to this project will be documented in this file.  The format
 
 
 
+## [2.0.8] - 2023-04-20
+
+### Changed
+* Update dependencies.
+
+
+
 ## [2.0.7] - 2023-03-08
 
 ### Changed
@@ -159,7 +166,8 @@ No changes.
 
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0
-[unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.7...dev
+[unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.8...dev
+[2.0.8]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.7...v2.0.8
 [2.0.7]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.6...v2.0.7
 [2.0.6]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.5...v2.0.6
 [2.0.5]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.4...v2.0.5
