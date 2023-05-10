@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.  The format
 
 
 
-## [2.0.10] - 2023-05-09
+## [2.0.10] - 2023-05-10
 
 ### Changed
 * Update dependencies.
