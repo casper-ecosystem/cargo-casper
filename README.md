@@ -15,7 +15,7 @@ A command line tool for creating a Wasm smart contract and tests for use on the 
 cargo install cargo-casper
 ```
 
-To install from the latest `main` branch:
+To install from the latest `dev` branch:
 
 ```
 git clone https://github.com/casper-ecosystem/cargo-casper
