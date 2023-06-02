@@ -11,10 +11,17 @@ All notable changes to this project will be documented in this file.  The format
 
 
 
+## [Unreleased]
+
+### Changed
+* Update pinned version of Rust toolchain to `nightly-2023-03-25` and update dependencies.
+
+
+
 ## [2.1.0] - 2023-05-12
 
 ### Changed
-* Update dependencies to match casper-node release 1.5.0
+* Update dependencies to match casper-node release 1.5.0.
 
 
 
@@ -187,7 +194,7 @@ No changes.
 
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0
-[unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.1.0...dev
+[Unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.1.0...dev
 [2.1.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.10...v2.1.0
 [2.0.10]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.9...v2.0.10
 [2.0.9]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.8...v2.0.9
