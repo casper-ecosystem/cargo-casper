@@ -6,7 +6,7 @@ mod tests {
         DeployItemBuilder, ExecuteRequestBuilder, InMemoryWasmTestBuilder, ARG_AMOUNT,
         DEFAULT_ACCOUNT_ADDR, DEFAULT_PAYMENT, PRODUCTION_RUN_GENESIS_REQUEST,
     };
-    use casper_execution_engine::core::{execution, engine_state::Error as EngineStateError};
+    use casper_execution_engine::core::{engine_state::Error as EngineStateError, execution};
     use casper_types::{runtime_args, ApiError, Key, RuntimeArgs};
 
     // Define `KEY` constant to match that in the contract.
@@ -99,10 +99,13 @@ mod tests {
             EngineStateError::Exec(execution::Error::Revert(error))
         );
 
-        assert_eq!(
-            actual, expected,
-            "Error should match {error_code} with reason: {reason}"
-        )
+        assert!(
+            matches!(
+                actual_error,
+                EngineStateError::Exec(execution::Error::Revert(api_error))
+                if api_error == ApiError::MissingArgument.into()),
+            "Expected missing argument, received {actual_error:?}"
+        );
     }
 }
 
