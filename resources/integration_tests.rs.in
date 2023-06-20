@@ -6,8 +6,7 @@ mod tests {
         DeployItemBuilder, ExecuteRequestBuilder, InMemoryWasmTestBuilder, ARG_AMOUNT,
         DEFAULT_ACCOUNT_ADDR, DEFAULT_PAYMENT, PRODUCTION_RUN_GENESIS_REQUEST,
     };
-    use casper_execution_engine::core::engine_state::Error as EngineStateError;
-    use casper_execution_engine::core::execution;
+    use casper_execution_engine::core::{execution, engine_state::Error as EngineStateError};
     use casper_types::{runtime_args, ApiError, Key, RuntimeArgs};
 
     // Define `KEY` constant to match that in the contract.
