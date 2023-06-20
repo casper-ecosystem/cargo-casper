@@ -90,10 +90,7 @@ mod tests {
         builder.exec(execute_request).commit().expect_failure();
 
         let error = ApiError::MissingArgument;
-        let error_code: u32 = error.into();
         let actual_error = builder.get_error().expect("must have error");
-        let reason = "should error on missing runtime_arg";
-        let actual = format!("{actual_error:?}");
         let expected = format!(
             "{:?}",
             EngineStateError::Exec(execution::Error::Revert(error))
@@ -103,7 +100,7 @@ mod tests {
             matches!(
                 actual_error,
                 EngineStateError::Exec(execution::Error::Revert(api_error))
-                if api_error == ApiError::MissingArgument.into()),
+                if api_error == error.into()),
             "Expected missing argument, received {actual_error:?}"
         );
     }
