@@ -16,7 +16,7 @@ jobs:
   nightly-cargo-test:
     strategy:
       matrix:
-        branch: [dev, release-2.1.0]
+        branch: [dev, release-2.1.1]
         os: [ubuntu-20.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     steps:
@@ -26,7 +26,7 @@ jobs:
 
       - name: Get nightly toolchain from file
         id: nightly-toolchain
-        run: echo "::set-output name=version::$(cat resources/rust-toolchain.in)"
+        run: echo "version=$(cat resources/rust-toolchain.in)" >> $GITHUB_OUTPUT
 
       - uses: actions-rs/toolchain@v1
         with:
