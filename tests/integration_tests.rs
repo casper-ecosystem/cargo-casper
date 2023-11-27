@@ -120,16 +120,16 @@ fn ci_branch_name() -> Option<String> {
 /// The generated project will have manifests which use the latest crates.io versions of the Casper
 /// dependencies.
 ///
-/// If `BRANCH_SELECTOR`, `GITHUB_BASE_REF` or `GITHUB_REF_NAME` is set to `main`, the test is run.
-/// If not, the test is an auto-pass.
+/// If `BRANCH_SELECTOR`, `GITHUB_BASE_REF` or `GITHUB_REF_NAME` starts with "release-", the test
+/// is run.  If not, the test is an auto-pass.
 #[test]
 fn should_run_cargo_casper_using_published_crates() {
     match ci_branch_name() {
-        Some(branch_name) if branch_name == "main" || branch_name.starts_with("release-") => (),
+        Some(branch_name) if branch_name.starts_with("release-") => (),
         Some(branch_name) => {
             println!(
-                "skipping 'should_run_cargo_casper_using_published_crates' as branch name '{}' is \
-                not 'main' and doesn't start with 'release-'",
+                "skipping 'should_run_cargo_casper_using_published_crates' as branch name '{}' \
+                doesn't start with 'release-'",
                 branch_name
             );
             return;
@@ -175,10 +175,10 @@ fn should_run_cargo_casper_using_git_overrides() {
     }
 
     let git_branch_arg = match ci_branch_name() {
-        Some(branch_name) if branch_name == "main" || branch_name.starts_with("release-") => {
+        Some(branch_name) if branch_name.starts_with("release-") => {
             println!(
-                "skipping 'should_run_cargo_casper_using_git_overrides' as branch name is 'main' \
-                or starts with 'release-'"
+                "skipping 'should_run_cargo_casper_using_git_overrides' as branch name starts \
+                with 'release-'"
             );
             return;
         }
