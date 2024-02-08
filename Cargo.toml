@@ -1,6 +1,6 @@
 [package]
 name = "cargo-casper"
-version = "2.1.1"
+version = "2.2.0"
 authors = ["Fraser Hutchison <fraser@casperlabs.io>"]
 edition = "2021"
 description = "A command line tool for creating a Wasm smart contract and tests for use on the Casper network."
