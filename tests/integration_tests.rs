@@ -69,20 +69,14 @@ fn run_make_test_on_generated_project(maybe_git_branch_arg: Option<String>) {
     assert_eq!(SUCCESS_EXIT_CODE, tool_output.status.code().unwrap());
 
     // Run 'make test' in the root of the generated project.  This builds the Wasm contract as well
-    // as the tests.  This requires the use of a nightly version of Rust, so we use rustup to
-    // execute the appropriate cargo version.
-    let mut test_cmd = Command::new("rustup");
-    let nightly_version = fs::read_to_string(format!(
-        "{}/resources/rust-toolchain.in",
-        env!("CARGO_MANIFEST_DIR")
-    ))
-    .unwrap();
+    // as the tests.
+    let mut test_cmd = Command::new("make");
     test_cmd
-        .arg("run")
-        .arg(nightly_version.trim())
-        .arg("make")
         .arg("test")
         .env("RUSTFLAGS", "-D warnings")
+        // We need to unset `RUSTUP_TOOLCHAIN` as it overrides the toolchain file in the generated
+        // project.
+        .env_remove("RUSTUP_TOOLCHAIN")
         .current_dir(test_dir);
 
     let test_output = output_from_command(test_cmd);

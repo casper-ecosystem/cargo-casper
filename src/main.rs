@@ -6,7 +6,6 @@ pub mod common;
 mod contract_package;
 pub mod dependency;
 mod makefile;
-mod rust_toolchain;
 mod tests_package;
 mod travis_yml;
 
@@ -152,7 +151,6 @@ fn main() {
     common::create_dir_all(ARGS.root_path());
     contract_package::create();
     tests_package::create();
-    rust_toolchain::create();
     makefile::create();
     travis_yml::create();
 }

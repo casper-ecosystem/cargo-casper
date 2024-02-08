@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.  The format
 
 ### Changed
 * Update dependencies to match casper-node release 1.5.6.
+* Restrict pinned nightly Rust version to only smart contract folder of generated project.
 
 
 
