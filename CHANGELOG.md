@@ -11,6 +11,13 @@ All notable changes to this project will be documented in this file.  The format
 
 
 
+## Unreleased
+
+### Changed
+* Update dependencies to match casper-node release 1.5.6.
+
+
+
 ## [2.1.1] - 2023-11-27
 
 ### Changed

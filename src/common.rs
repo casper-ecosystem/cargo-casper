@@ -9,9 +9,9 @@ pub static CL_CONTRACT: Lazy<Dependency> =
     Lazy::new(|| Dependency::new("casper-contract", "4.0.0"));
 pub static CL_TYPES: Lazy<Dependency> = Lazy::new(|| Dependency::new("casper-types", "4.0.1"));
 pub static CL_ENGINE_TEST_SUPPORT: Lazy<Dependency> =
-    Lazy::new(|| Dependency::new("casper-engine-test-support", "7.0.0"));
+    Lazy::new(|| Dependency::new("casper-engine-test-support", "7.0.1"));
 pub static CL_EXECUTION_ENGINE: Lazy<Dependency> =
-    Lazy::new(|| Dependency::new("casper-execution-engine", "7.0.0"));
+    Lazy::new(|| Dependency::new("casper-execution-engine", "7.0.1"));
 pub static PATCH_SECTION: Lazy<String> = Lazy::new(|| match ARGS.casper_overrides() {
     Some(CasperOverrides::WorkspacePath(path)) => {
         format!(
