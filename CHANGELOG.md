@@ -11,6 +11,14 @@ All notable changes to this project will be documented in this file.  The format
 
 
 
+## [2.2.0] - 2024-02-09
+
+### Changed
+* Update dependencies to match casper-node release 1.5.6.
+* Restrict pinned nightly Rust version to only smart contract folder of generated project.
+
+
+
 ## [2.1.1] - 2023-11-27
 
 ### Changed
@@ -198,7 +206,8 @@ No changes.
 
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0
-[Unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.1.1...dev
+[Unreleased]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.2.0...dev
+[2.2.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.10...v2.1.0
 [2.0.10]: https://github.com/casper-ecosystem/cargo-casper/compare/v2.0.9...v2.0.10
