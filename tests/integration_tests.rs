@@ -1,4 +1,4 @@
-use std::{env, fs, process::Output};
+use std::{env, process::Output};
 
 use assert_cmd::Command;
 
@@ -15,21 +15,23 @@ const CI_BRANCH_NAME_ENV_VAR: &str = "GITHUB_REF_NAME";
 
 #[test]
 fn should_fail_when_target_path_already_exists() {
-    let test_dir = tempfile::tempdir().unwrap().into_path();
+    let tmp_dir = tempfile::tempdir().unwrap();
+    let path = tmp_dir.as_ref();
     let output_error = Command::cargo_bin(env!("CARGO_PKG_NAME"))
         .unwrap()
-        .arg(&test_dir)
+        .arg(path)
         .unwrap_err();
 
     let exit_code = output_error.as_output().unwrap().status.code().unwrap();
     assert_eq!(FAILURE_EXIT_CODE, exit_code);
 
     let stderr: String = String::from_utf8_lossy(&output_error.as_output().unwrap().stderr).into();
-    let expected_msg_fragment = format!(": destination '{}' already exists", test_dir.display());
+    let expected_msg_fragment = format!(
+        ": destination '{}' already exists",
+        tmp_dir.as_ref().display()
+    );
     assert!(stderr.contains(&expected_msg_fragment));
     assert!(stderr.contains("error"));
-
-    fs::remove_dir_all(&test_dir).unwrap();
 }
 
 /// Runs `cmd` and returns the `Output` if successful, or panics on failure.
@@ -49,11 +51,11 @@ fn output_from_command(mut command: Command) -> Output {
 }
 
 fn run_make_test_on_generated_project(maybe_git_branch_arg: Option<String>) {
-    let temp_dir = tempfile::tempdir().unwrap().into_path();
+    let temp_dir = tempfile::tempdir().unwrap();
 
     // Run 'cargo-casper <test dir>/<subdir>'
     let subdir = TEST_PATH;
-    let test_dir = temp_dir.join(subdir);
+    let test_dir = temp_dir.as_ref().join(subdir);
     let mut tool_cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     tool_cmd.arg(&test_dir);
     if let Some(git_branch_arg) = maybe_git_branch_arg {
@@ -81,9 +83,6 @@ fn run_make_test_on_generated_project(maybe_git_branch_arg: Option<String>) {
 
     let test_output = output_from_command(test_cmd);
     assert_eq!(SUCCESS_EXIT_CODE, test_output.status.code().unwrap());
-
-    // Cleans up temporary directory, but leaves it otherwise if the test failed.
-    fs::remove_dir_all(&temp_dir).unwrap();
 }
 
 fn ci_branch_name() -> Option<String> {

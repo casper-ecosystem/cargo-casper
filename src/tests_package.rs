@@ -1,35 +1,36 @@
 //! Consts and functions used to generate the files comprising the "tests" package when running the
 //! tool.
 
-use std::path::PathBuf;
-
-use once_cell::sync::Lazy;
+use std::{path::PathBuf, sync::LazyLock};
 
 use crate::{
     common::{
-        self, CL_CONTRACT, CL_ENGINE_TEST_SUPPORT, CL_EXECUTION_ENGINE, CL_TYPES, PATCH_SECTION,
+        self, BASE_64_CT, CL_CONTRACT, CL_ENGINE_TEST_SUPPORT, CL_EXECUTION_ENGINE, CL_TYPES,
+        PATCH_SECTION,
     },
     ARGS,
 };
 
 const PACKAGE_NAME: &str = "tests";
 
-static CONTRACT_PACKAGE_ROOT: Lazy<PathBuf> = Lazy::new(|| ARGS.root_path().join(PACKAGE_NAME));
-static CARGO_TOML: Lazy<PathBuf> = Lazy::new(|| CONTRACT_PACKAGE_ROOT.join("Cargo.toml"));
-static INTEGRATION_TESTS_RS: Lazy<PathBuf> =
-    Lazy::new(|| CONTRACT_PACKAGE_ROOT.join("src/integration_tests.rs"));
+static CONTRACT_PACKAGE_ROOT: LazyLock<PathBuf> =
+    LazyLock::new(|| ARGS.root_path().join(PACKAGE_NAME));
+static CARGO_TOML: LazyLock<PathBuf> = LazyLock::new(|| CONTRACT_PACKAGE_ROOT.join("Cargo.toml"));
+static INTEGRATION_TESTS_RS: LazyLock<PathBuf> =
+    LazyLock::new(|| CONTRACT_PACKAGE_ROOT.join("src/integration_tests.rs"));
 
-pub static TEST_DEPENDENCIES: Lazy<String> = Lazy::new(|| {
+pub static TEST_DEPENDENCIES: LazyLock<String> = LazyLock::new(|| {
     format!(
-        "{}{}{}{}",
+        "{}{}{}{}{}",
         CL_CONTRACT.display_with_features(false, vec!["test-support"]),
-        CL_ENGINE_TEST_SUPPORT.display_with_features(true, vec!["test-support"]),
+        CL_ENGINE_TEST_SUPPORT.display_with_features(true, vec![]),
         CL_EXECUTION_ENGINE.display_with_features(true, vec![]),
-        CL_TYPES.display_with_features(true, vec![])
+        CL_TYPES.display_with_features(true, vec![]),
+        BASE_64_CT.display_with_features(true, vec![])
     )
 });
 
-static CARGO_TOML_CONTENTS: Lazy<String> = Lazy::new(|| {
+static CARGO_TOML_CONTENTS: LazyLock<String> = LazyLock::new(|| {
     format!(
         r#"[package]
 name = "tests"

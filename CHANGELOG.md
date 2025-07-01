@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.  The format
 [comment]: <> (Security:   in case of vulnerabilities)
 
 
+## [3.0.0] - 2025-07-01
+* Updating dependencies to work with 2.0.0 node
+
 
 ## [2.2.0] - 2024-02-09
 

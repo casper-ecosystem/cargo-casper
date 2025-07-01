@@ -7,10 +7,10 @@ mod tests {
     use std::path::PathBuf;
 
     use casper_engine_test_support::{
-        DeployItemBuilder, ExecuteRequestBuilder, InMemoryWasmTestBuilder, ARG_AMOUNT,
-        DEFAULT_ACCOUNT_ADDR, DEFAULT_PAYMENT, PRODUCTION_RUN_GENESIS_REQUEST,
+        DeployItemBuilder, ExecuteRequestBuilder, LmdbWasmTestBuilder, ARG_AMOUNT,
+        DEFAULT_ACCOUNT_ADDR, DEFAULT_PAYMENT, LOCAL_GENESIS_REQUEST,
     };
-    use casper_execution_engine::core::{engine_state::Error as EngineStateError, execution};
+    use casper_execution_engine::{engine_state::Error, execution::ExecError};
     use casper_types::{runtime_args, ApiError, Key, RuntimeArgs};
 
     // Define `KEY` constant to match that in the contract.
@@ -21,10 +21,8 @@ mod tests {
 
     #[test]
     fn should_store_hello_world() {
-        let mut builder = InMemoryWasmTestBuilder::default();
-        builder
-            .run_genesis(&PRODUCTION_RUN_GENESIS_REQUEST)
-            .commit();
+        let mut builder = LmdbWasmTestBuilder::default();
+        builder.run_genesis(LOCAL_GENESIS_REQUEST.clone()).commit();
 
         // The test framework checks for compiled Wasm files in '<current working dir>/wasm'.  Paths
         // relative to the current working dir (e.g. 'wasm/contract.wasm') can also be used, as can
@@ -35,7 +33,7 @@ mod tests {
         };
 
         let deploy_item = DeployItemBuilder::new()
-            .with_empty_payment_bytes(runtime_args! {
+            .with_standard_payment(runtime_args! {
                 ARG_AMOUNT => *DEFAULT_PAYMENT
             })
             .with_session_code(session_code, session_args)
@@ -43,7 +41,7 @@ mod tests {
             .with_address(*DEFAULT_ACCOUNT_ADDR)
             .build();
 
-        let execute_request = ExecuteRequestBuilder::from_deploy_item(deploy_item).build();
+        let execute_request = ExecuteRequestBuilder::from_deploy_item(&deploy_item).build();
 
         // prepare assertions.
         let result_of_query = builder.query(
@@ -79,28 +77,26 @@ mod tests {
         let session_args = RuntimeArgs::new();
 
         let deploy_item = DeployItemBuilder::new()
-            .with_empty_payment_bytes(runtime_args! {ARG_AMOUNT => *DEFAULT_PAYMENT})
+            .with_standard_payment(runtime_args! {ARG_AMOUNT => *DEFAULT_PAYMENT})
             .with_authorization_keys(&[*DEFAULT_ACCOUNT_ADDR])
             .with_address(*DEFAULT_ACCOUNT_ADDR)
             .with_session_code(session_code, session_args)
             .build();
 
-        let execute_request = ExecuteRequestBuilder::from_deploy_item(deploy_item).build();
+        let execute_request = ExecuteRequestBuilder::from_deploy_item(&deploy_item).build();
 
-        let mut builder = InMemoryWasmTestBuilder::default();
-        builder
-            .run_genesis(&PRODUCTION_RUN_GENESIS_REQUEST)
-            .commit();
+        let mut builder = LmdbWasmTestBuilder::default();
+        builder.run_genesis(LOCAL_GENESIS_REQUEST.clone()).commit();
         builder.exec(execute_request).commit().expect_failure();
 
         let actual_error = builder.get_error().expect("must have error");
         assert!(
             matches!(
                 actual_error,
-                EngineStateError::Exec(execution::Error::Revert(ApiError::MissingArgument))
+                Error::Exec(ExecError::Revert(ApiError::MissingArgument))
             ),
             "Expected {:?}, received {:?}",
-            EngineStateError::Exec(execution::Error::Revert(ApiError::MissingArgument)),
+            Error::Exec(ExecError::Revert(ApiError::MissingArgument)),
             actual_error
         );
     }

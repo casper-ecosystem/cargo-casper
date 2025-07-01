@@ -6,6 +6,11 @@ use crate::ARGS;
 pub struct Dependency {
     name: String,
     version: String,
+    /// This flag will force a dependency to be always used with it's declared `version` (for
+    /// some tests we subtitute version with `*`). Some dependencies need to be set in a very
+    /// specific version, because their edition configurations in newer patch versions are
+    /// not compatible with our rust toolchain
+    allow_asterixify: bool,
 }
 
 impl Dependency {
@@ -13,11 +18,20 @@ impl Dependency {
         Dependency {
             name: name.to_string(),
             version: version.to_string(),
+            allow_asterixify: true,
+        }
+    }
+
+    pub fn new_disallow_asterix(name: &str, version: &str) -> Self {
+        Dependency {
+            name: name.to_string(),
+            version: version.to_string(),
+            allow_asterixify: false,
         }
     }
 
     pub fn display_with_features(&self, default_features: bool, features: Vec<&str>) -> String {
-        let version = if ARGS.casper_overrides().is_some() {
+        let version = if self.allow_asterixify && ARGS.casper_overrides().is_some() {
             "*"
         } else {
             &self.version
