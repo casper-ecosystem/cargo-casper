@@ -12,10 +12,10 @@ mod travis_yml;
 use std::{
     env,
     path::{Path, PathBuf},
+    sync::LazyLock,
 };
 
 use clap::{builder::ValueParser, crate_description, crate_name, crate_version, Arg, Command};
-use once_cell::sync::Lazy;
 
 const USAGE: &str = r#"cargo casper [FLAGS] <path>
     cd <path>
@@ -37,7 +37,7 @@ const GIT_BRANCH_LONG: &str = "git-branch";
 
 const FAILURE_EXIT_CODE: i32 = 101;
 
-static ARGS: Lazy<Args> = Lazy::new(Args::new);
+static ARGS: LazyLock<Args> = LazyLock::new(Args::new);
 
 /// Can be used (via hidden command line args) to specify a patch section for the casper crates in
 /// the generated Cargo.toml files.

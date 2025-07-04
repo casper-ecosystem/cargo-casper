@@ -1,28 +1,29 @@
 //! Consts and functions used to generate the files comprising the "contract" package when running
 //! the tool.
 
-use std::path::PathBuf;
-
-use once_cell::sync::Lazy;
+use std::{path::PathBuf, sync::LazyLock};
 
 use crate::{
-    common::{self, CL_CONTRACT, CL_TYPES, PATCH_SECTION},
+    common::{self, BASE_64_CT, CL_CONTRACT, CL_TYPES, PATCH_SECTION},
     ARGS,
 };
 
 const PACKAGE_NAME: &str = "contract";
-static CONTRACT_PACKAGE_ROOT: Lazy<PathBuf> =
-    Lazy::new(|| ARGS.root_path().join(PACKAGE_NAME.replace('-', "_")));
-static CARGO_TOML: Lazy<PathBuf> = Lazy::new(|| CONTRACT_PACKAGE_ROOT.join("Cargo.toml"));
-static MAIN_RS: Lazy<PathBuf> = Lazy::new(|| CONTRACT_PACKAGE_ROOT.join("src/main.rs"));
-static CONFIG_TOML: Lazy<PathBuf> = Lazy::new(|| CONTRACT_PACKAGE_ROOT.join(".cargo/config.toml"));
-static RUST_TOOLCHAIN: Lazy<PathBuf> = Lazy::new(|| CONTRACT_PACKAGE_ROOT.join("rust-toolchain"));
+static CONTRACT_PACKAGE_ROOT: LazyLock<PathBuf> =
+    LazyLock::new(|| ARGS.root_path().join(PACKAGE_NAME.replace('-', "_")));
+static CARGO_TOML: LazyLock<PathBuf> = LazyLock::new(|| CONTRACT_PACKAGE_ROOT.join("Cargo.toml"));
+static MAIN_RS: LazyLock<PathBuf> = LazyLock::new(|| CONTRACT_PACKAGE_ROOT.join("src/main.rs"));
+static CONFIG_TOML: LazyLock<PathBuf> =
+    LazyLock::new(|| CONTRACT_PACKAGE_ROOT.join(".cargo/config.toml"));
+static RUST_TOOLCHAIN: LazyLock<PathBuf> =
+    LazyLock::new(|| CONTRACT_PACKAGE_ROOT.join("rust-toolchain"));
 
-static CONTRACT_DEPENDENCIES: Lazy<String> = Lazy::new(|| {
+static CONTRACT_DEPENDENCIES: LazyLock<String> = LazyLock::new(|| {
     format!(
-        "{}{}",
+        "{}{}{}",
         CL_CONTRACT.display_with_features(true, vec![]),
         CL_TYPES.display_with_features(true, vec![]),
+        BASE_64_CT.display_with_features(true, vec![]),
     )
 });
 
@@ -30,7 +31,7 @@ const CONFIG_TOML_CONTENTS: &str = r#"[build]
 target = "wasm32-unknown-unknown"
 "#;
 
-static CARGO_TOML_CONTENTS: Lazy<String> = Lazy::new(|| {
+static CARGO_TOML_CONTENTS: LazyLock<String> = LazyLock::new(|| {
     format!(
         r#"[package]
 name = "{}"
@@ -93,8 +94,10 @@ mod tests {
     const CRON_JOB_BRANCH_NAME_ENV_VAR: &str = "BRANCH_SELECTOR";
     const PR_TARGET_BRANCH_NAME_ENV_VAR: &str = "GITHUB_BASE_REF";
     const CI_BRANCH_NAME_ENV_VAR: &str = "GITHUB_REF_NAME";
+    // This points to the exact commit from which 2.0.0 release was cut. This needs to be updated once we release a new version.
+    // It makes little sense to blindly check the toolchain against dev since the node doesn't freeze dev between releases.
     const CASPER_NODE_TOOLCHAIN_URL: &str =
-        "https://raw.githubusercontent.com/casper-network/casper-node/dev/smart_contracts/rust-toolchain";
+        "https://raw.githubusercontent.com/casper-network/casper-node/a7e4ff100549d6b34aa6b800812f29313378663b/smart_contracts/rust-toolchain";
 
     /// Checks that the pinned version of Rust is that of the `dev` branch of casper-node.
     ///
