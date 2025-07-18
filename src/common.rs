@@ -5,13 +5,13 @@ use colour::e_red;
 use crate::{dependency::Dependency, CasperOverrides, ARGS, FAILURE_EXIT_CODE};
 
 pub static CL_CONTRACT: LazyLock<Dependency> =
-    LazyLock::new(|| Dependency::new("casper-contract", "5.1.0"));
+    LazyLock::new(|| Dependency::new("casper-contract", "5.1.1"));
 pub static CL_TYPES: LazyLock<Dependency> =
-    LazyLock::new(|| Dependency::new("casper-types", "6.0.0"));
+    LazyLock::new(|| Dependency::new("casper-types", "6.0.1"));
 pub static CL_ENGINE_TEST_SUPPORT: LazyLock<Dependency> =
-    LazyLock::new(|| Dependency::new("casper-engine-test-support", "8.1.0"));
+    LazyLock::new(|| Dependency::new("casper-engine-test-support", "8.1.1"));
 pub static CL_EXECUTION_ENGINE: LazyLock<Dependency> =
-    LazyLock::new(|| Dependency::new("casper-execution-engine", "8.1.0"));
+    LazyLock::new(|| Dependency::new("casper-execution-engine", "8.1.1"));
 //This dependency is currently required because the toolchain we use doesn't allow compiling with `edition 2024`.
 // base64ct Library in 1.7.3 enabled edition 2024 so for now we need to force 1.7.2. We should be able to remove
 // specyfinig this depencency altogether once we move out of nightly-2024-07-31 toolchain.
