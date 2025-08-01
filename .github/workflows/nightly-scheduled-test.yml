@@ -4,11 +4,6 @@ name: nightly-scheduled-test
 on:
   workflow_dispatch:
 
-  schedule:
-    # * is a special character in YAML so you have to quote this string
-    # runs every day at midnight
-    - cron: "0 0 * * *"
-
 permissions:
   contents: write
 
